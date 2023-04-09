@@ -1,0 +1,32 @@
+type: code
+files:
+- name: src/Main.java
+  visible: true
+  text: |-
+    class User {
+        private long id;
+        private String name;
+        private String password;
+        private List<Blog> blogs;
+
+        //constructors, getters, and setters
+    }
+
+    class Blog {
+        private long id;
+        private String name;
+        private User author;
+        private String content;
+
+        //constructors, getters, and setters
+    }
+
+    //implement the record below
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/25621#comment
+status: Solved
+feedback:
+  message: <html>Correct solution</html>
+  time: "Wed, 29 Mar 2023 20:36:28 UTC"
+record: -1
+submission_language: java17
