@@ -763,6 +763,12 @@ files:
     </body>
     </html>
   learner_created: true
+- name: src/resources/templates/latestCodes.ftlh
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/learn/step/11029#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: "Mon, 10 Apr 2023 10:22:10 UTC"
 record: -1

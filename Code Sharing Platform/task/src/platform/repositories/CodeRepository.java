@@ -5,11 +5,14 @@ import platform.models.Code;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @org.springframework.stereotype.Repository
 public class CodeRepository {
     private List<Code> codeList = new ArrayList<>();
+    private static long newCodeId = 1;
     private final String DATE_FORMATTER = "yyyy/MM/dd HH:mm:ss";
     public List<Code> getAllCodes() {
         if(codeList.isEmpty())
@@ -29,7 +32,7 @@ public class CodeRepository {
 
     public Code save(Code newCode) {
         Code code = new Code();
-        code.setId(1); //zmienic na getId
+        code.setId(newCodeId++);
         code.setContent(newCode.getContent());
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMATTER);
@@ -79,5 +82,11 @@ public class CodeRepository {
 
         return latestCodeList;
 
+    }
+
+    public Map<String, String> getLastId() {
+        HashMap<String, String> lastIdJson = new HashMap<>();
+        lastIdJson.put("id", String.valueOf(codeList.get(codeList.size()-1).getId()));
+        return lastIdJson;
     }
 }

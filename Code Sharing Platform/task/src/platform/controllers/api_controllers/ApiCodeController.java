@@ -1,5 +1,7 @@
 package platform.controllers.api_controllers;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,8 +25,7 @@ public class ApiCodeController {
     @PostMapping("new")
     public ResponseEntity<?> createNewCode(@RequestBody Code code) {
         codeService.saveCode(code);
-        System.out.println(codeService.getCodes());
-        return new ResponseEntity<>(new EmptyJsonBody(), HttpStatus.OK);
+        return new ResponseEntity<>(codeService.getLastId(), HttpStatus.OK);
     }
 
     @GetMapping("{id}")

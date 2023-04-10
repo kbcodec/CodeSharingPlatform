@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import platform.models.Code;
 import platform.repositories.CodeRepository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CodeService {
@@ -35,5 +37,9 @@ public class CodeService {
 
     public List<Code> getLatestCodes() {
         return codeRepository.getLatestCodes();
+    }
+
+    public Map<String, String> getLastId() {
+        return codeRepository.getLastId();
     }
 }
