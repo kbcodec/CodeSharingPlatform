@@ -266,7 +266,7 @@ files:
 - name: src/resources/templates/main.js
   visible: true
   learner_created: true
-- name: src/resources/templates/singleCode.html
+- name: src/resources/templates/singleCode.ftlh
   visible: true
   learner_created: true
 - name: src/resources/templates/newCode.html

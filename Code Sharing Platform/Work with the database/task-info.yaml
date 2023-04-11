@@ -474,6 +474,395 @@ files:
         }
     }
   learner_created: false
+- name: src/resources/templates/latestCodes.ftlh
+  visible: true
+  text: |-
+    <!DOCTYPE html>
+    <html layout:decorate="layouts/defaultLayout" xmlns:th="http://www.thymeleaf.org"
+          xmlns:layout="http://www.w3.org/1999/xhtml" lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Latest</title>
+    </head>
+    <body>
+    <#list codes as code>
+        <span id="load_date">${code.lastUpdate}</span>
+        <pre id="code_snippet">${code.content}</pre>
+    </#list>
+    </body>
+    </html>
+  learner_created: true
+- name: src/platform/exceptions/EmptyCodeContentException.java
+  visible: true
+  text: |
+    package platform.exceptions;
+
+    public final class EmptyCodeContentException extends CustomException{
+        public EmptyCodeContentException() {
+            super("Code content is empty.");
+        }
+    }
+  learner_created: true
+- name: src/platform/services/CodeService.java
+  visible: true
+  text: |
+    package platform.services;
+
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.stereotype.Service;
+    import platform.models.Code;
+    import platform.repositories.CodeRepository;
+
+    import java.util.HashMap;
+    import java.util.List;
+    import java.util.Map;
+
+    @Service
+    public class CodeService {
+        @Autowired
+        private CodeRepository codeRepository;
+
+        public Code saveCode(Code code){
+            return codeRepository.save(code);
+        }
+
+        public List<Code> getCodes() {
+            return codeRepository.getAllCodes();
+        }
+
+        public Code getCodeById(long id) {
+            return codeRepository.findById(id);
+        }
+
+        public String deleteCode(long id) {
+            codeRepository.delete(id);
+            return "Code removed. id = " + id;
+        }
+
+        public Code updateCode (Code code) {
+            return codeRepository.update(code);
+        }
+
+        public List<Code> getLatestCodes() {
+            return codeRepository.getLatestCodes();
+        }
+
+        public Map<String, String> getLastId() {
+            return codeRepository.getLastId();
+        }
+    }
+  learner_created: true
+- name: src/platform/controllers/api_controllers/ApiCodeController.java
+  visible: true
+  text: |
+    package platform.controllers.api_controllers;
+
+    import com.fasterxml.jackson.databind.util.JSONPObject;
+    import org.apache.tomcat.util.json.JSONParser;
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.http.HttpHeaders;
+    import org.springframework.http.HttpStatus;
+    import org.springframework.http.ResponseEntity;
+    import org.springframework.stereotype.Controller;
+    import org.springframework.ui.Model;
+    import org.springframework.web.bind.annotation.*;
+    import platform.models.Code;
+    import platform.models.EmptyJsonBody;
+    import platform.services.CodeService;
+
+    import java.time.LocalDateTime;
+    import java.util.Map;
+
+    @RestController
+    @RequestMapping("/api/code")
+    public class ApiCodeController {
+        @Autowired
+        private CodeService codeService;
+
+        @PostMapping("new")
+        public ResponseEntity<?> createNewCode(@RequestBody Code code) {
+            codeService.saveCode(code);
+            return new ResponseEntity<>(codeService.getLastId(), HttpStatus.OK);
+        }
+
+        @GetMapping("{id}")
+        public ResponseEntity<?> getCodeById(@PathVariable long id) {
+            return new ResponseEntity<>(codeService.getCodeById(id), HttpStatus.OK);
+        }
+
+        @GetMapping("latest")
+        public ResponseEntity<?> getLatestCodes() {
+            return new ResponseEntity<>(codeService.getLatestCodes(), HttpStatus.OK);
+        }
+
+
+    }
+  learner_created: true
+- name: src/platform/models/EmptyJsonBody.java
+  visible: true
+  text: |
+    package platform.models;
+
+    import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+    @JsonSerialize
+    public class EmptyJsonBody {
+    }
+  learner_created: true
+- name: src/platform/models/Code.java
+  visible: true
+  text: |
+    package platform.models;
+
+    import com.fasterxml.jackson.annotation.JsonIgnore;
+    import com.fasterxml.jackson.annotation.JsonProperty;
+    import lombok.*;
+
+    import java.util.Objects;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public class Code {
+        @JsonIgnore
+        public long id;
+        @JsonProperty("code")
+        public String content;
+        @JsonProperty("date")
+        public String lastUpdate;
+
+        @Override
+        public String toString() {
+            return "Code{" +
+                    "id=" + id +
+                    ", content='" + content + '\'' +
+                    ", lastUpdate=" + lastUpdate +
+                    '}';
+        }
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Code code = (Code) o;
+            return id == code.id && Objects.equals(content, code.content) && Objects.equals(lastUpdate, code.lastUpdate);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id, content, lastUpdate);
+        }
+    }
+  learner_created: true
+- name: src/platform/controllers/web_controllers/WebCodeController.java
+  visible: true
+  text: |
+    package platform.controllers.web_controllers;
+
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.stereotype.Controller;
+    import org.springframework.ui.Model;
+    import org.springframework.web.bind.annotation.GetMapping;
+    import org.springframework.web.bind.annotation.PathVariable;
+    import org.springframework.web.bind.annotation.RequestMapping;
+    import platform.services.CodeService;
+
+    @Controller
+    @RequestMapping("code")
+    public class WebCodeController {
+        @Autowired
+        private CodeService codeService;
+
+        @GetMapping("{id}")
+        public String getCode(Model model, @PathVariable long id){
+            model.addAttribute("code", codeService.getCodeById(id).getContent());
+            model.addAttribute("date", codeService.getCodeById(id).getLastUpdate());
+            return "singleCode";
+        }
+
+        @GetMapping("new")
+        public String postCode(Model model) {
+            return "newCode";
+        }
+
+        @GetMapping("latest")
+        public String getLatest(Model model) {
+            model.addAttribute("codes", codeService.getLatestCodes());
+            return "latestCodes";
+        }
+    }
+  learner_created: true
+- name: src/resources/templates/main.js
+  visible: true
+  text: |-
+    function send() {
+        console.log("IM HERE");
+        let object = {
+            "code": document.getElementById("code_snippet").value
+        };
+
+        let json = JSON.stringify(object);
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", '/api/code/new', false)
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        xhr.send(json);
+
+        if (xhr.status === 200) {
+            alert("Success!");
+        }
+    }
+  learner_created: true
+- name: src/platform/repositories/CodeRepository.java
+  visible: true
+  text: |
+    package platform.repositories;
+
+    import platform.models.Code;
+
+    import java.time.LocalDateTime;
+    import java.time.format.DateTimeFormatter;
+    import java.util.ArrayList;
+    import java.util.HashMap;
+    import java.util.List;
+    import java.util.Map;
+
+    @org.springframework.stereotype.Repository
+    public class CodeRepository {
+        private List<Code> codeList = new ArrayList<>();
+        private static long newCodeId = 1;
+        private final String DATE_FORMATTER = "yyyy/MM/dd HH:mm:ss";
+        public List<Code> getAllCodes() {
+            if(codeList.isEmpty())
+            {
+                return null;
+            }
+            return codeList;
+        }
+        public Code findById(long id) {
+            for(int i = 0; i < codeList.size(); i++) {
+                if(codeList.get(i).getId() == id) {
+                    return codeList.get(i);
+                }
+            }
+            return null;
+        }
+
+        public Code save(Code newCode) {
+            Code code = new Code();
+            code.setId(newCodeId++);
+            code.setContent(newCode.getContent());
+            LocalDateTime localDateTime = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMATTER);
+            String formatDateTime = localDateTime.format(formatter);
+            code.setLastUpdate(formatDateTime);
+            codeList.add(code);
+            return code;
+        }
+
+        public String delete(long id) {
+            codeList.removeIf(x -> x.getId() == id);
+            return null;
+        }
+
+        public Code update(Code code) {
+            int idx = 0;
+            long id = 0;
+            for(int i = 0; i < codeList.size(); i++) {
+                if(codeList.get(i).getId() == code.getId()) {
+                    id = code.getId();
+                    idx = i;
+                    break;
+                }
+            }
+            Code newCode = new Code();
+            newCode.setId(id);
+            newCode.setContent(code.getContent());
+            newCode.setLastUpdate(code.getLastUpdate());
+            codeList.set(idx, newCode);
+            return code;
+        }
+
+        public List<Code> getLatestCodes() {
+            if(codeList.isEmpty())
+            {
+                return null;
+            }
+
+            List<Code> latestCodeList = new ArrayList<>();
+            int idx = 1;
+            for (int i = codeList.size() - 1; i >= 0; i--){
+                latestCodeList.add(codeList.get(i));
+                if(++idx > 10) {
+                    return latestCodeList;
+                }
+            }
+
+            return latestCodeList;
+
+        }
+
+        public Map<String, String> getLastId() {
+            HashMap<String, String> lastIdJson = new HashMap<>();
+            lastIdJson.put("id", String.valueOf(codeList.get(codeList.size()-1).getId()));
+            return lastIdJson;
+        }
+    }
+  learner_created: true
+- name: src/platform/exceptions/CustomException.java
+  visible: true
+  text: |
+    package platform.exceptions;
+
+    abstract public class CustomException extends Exception{
+        public CustomException(String message) {
+            super(message);
+        }
+    }
+  learner_created: true
+- name: src/resources/templates/newCode.html
+  visible: true
+  text: |-
+    <!DOCTYPE html>
+    <html layout:decorate="layouts/defaultLayout" xmlns:th="http://www.thymeleaf.org"
+          xmlns:layout="http://www.w3.org/1999/xhtml" lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Create</title>
+        <script>
+            function send() {
+                console.log(document.getElementById("code_snippet").value);
+                let object = {
+                    "code": document.getElementById("code_snippet").value
+                };
+
+                let json = JSON.stringify(object);
+
+                let xhr = new XMLHttpRequest();
+                xhr.open("POST", '/api/code/new', false)
+                xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+                xhr.send(json);
+
+                if (xhr.status === 200) {
+                    alert("Success!");
+                }
+            }
+        </script>
+    </head>
+    <body>
+    <textarea id="code_snippet" th:value="${code}"></textarea>
+    <button id="send_snippet" type="submit" onclick="send()">Submit</button>
+
+    </body>
+    </html>
+  learner_created: true
+- name: src/resources/templates/singleCode.ftlh
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/learn/step/11030#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: "Tue, 11 Apr 2023 17:47:42 UTC"
 record: -1

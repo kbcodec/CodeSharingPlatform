@@ -16,8 +16,8 @@ public class WebCodeController {
 
     @GetMapping("{id}")
     public String getCode(Model model, @PathVariable long id){
-        model.addAttribute("code", codeService.getCodeById(id).getContent());
-        model.addAttribute("date", codeService.getCodeById(id).getLastUpdate());
+        model.addAttribute("code", codeService.findCodeById(id).getContent());
+        model.addAttribute("date", codeService.findCodeById(id).getLastUpdate());
         return "singleCode";
     }
 
@@ -28,7 +28,7 @@ public class WebCodeController {
 
     @GetMapping("latest")
     public String getLatest(Model model) {
-        model.addAttribute("codes", codeService.getLatestCodes());
+        model.addAttribute("codes", codeService.findLatestCodes());
         return "latestCodes";
     }
 }

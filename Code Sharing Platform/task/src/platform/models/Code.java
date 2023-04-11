@@ -2,22 +2,54 @@ package platform.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
-@Data
-@NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@NoArgsConstructor
+@Data
+@Entity
+@Table(name = "CODE")
 public class Code {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
+    @Column(name = "C_ID")
     public long id;
     @JsonProperty("code")
+    @Column(name = "C_CONTENT")
     public String content;
     @JsonProperty("date")
+    @Column(name = "C_LASTUPDATE")
     public String lastUpdate;
+    @Transient
+    @JsonIgnore
+    private final String DATE_FORMAT = "yyyy/MM/dd HH:mm:ss";
+
+    public Code (String content) {
+        this.content = content;
+        this.lastUpdate = DateTimeFormatter.ofPattern(DATE_FORMAT).format(LocalDateTime.now());;
+
+    }
+
+    @Transient
+    @JsonIgnore
+    public String getDATE_FORMAT() {
+        return DATE_FORMAT;
+    }
+
+    @JsonIgnore
+    public Map<String, String> getIdAsJson() {
+        HashMap<String, String> jsonId = new HashMap<>();
+        jsonId.put("id", String.valueOf(this.id));
+        return jsonId;
+    }
 
     @Override
     public String toString() {

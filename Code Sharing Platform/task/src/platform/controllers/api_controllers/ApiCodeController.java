@@ -22,21 +22,25 @@ public class ApiCodeController {
     @Autowired
     private CodeService codeService;
 
+    @GetMapping
+    public ResponseEntity<?> getAllCodes() {
+        return new ResponseEntity<>(codeService.findAll(), HttpStatus.OK);
+    }
+
     @PostMapping("new")
     public ResponseEntity<?> createNewCode(@RequestBody Code code) {
-        codeService.saveCode(code);
-        return new ResponseEntity<>(codeService.getLastId(), HttpStatus.OK);
+        Code createdCode = codeService.saveCode(new Code(code.getContent()));
+        return new ResponseEntity<>(createdCode.getIdAsJson(), HttpStatus.OK);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<?> getCodeById(@PathVariable long id) {
-        return new ResponseEntity<>(codeService.getCodeById(id), HttpStatus.OK);
+        return new ResponseEntity<>(codeService.findCodeById(id), HttpStatus.OK);
     }
 
     @GetMapping("latest")
     public ResponseEntity<?> getLatestCodes() {
-        return new ResponseEntity<>(codeService.getLatestCodes(), HttpStatus.OK);
+        return new ResponseEntity<>(codeService.findLatestCodes(), HttpStatus.OK);
     }
-
 
 }

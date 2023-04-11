@@ -1,92 +1,15 @@
 package platform.repositories;
 
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 import platform.models.Code;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-@org.springframework.stereotype.Repository
-public class CodeRepository {
-    private List<Code> codeList = new ArrayList<>();
-    private static long newCodeId = 1;
-    private final String DATE_FORMATTER = "yyyy/MM/dd HH:mm:ss";
-    public List<Code> getAllCodes() {
-        if(codeList.isEmpty())
-        {
-            return null;
-        }
-        return codeList;
-    }
-    public Code findById(long id) {
-        for(int i = 0; i < codeList.size(); i++) {
-            if(codeList.get(i).getId() == id) {
-                return codeList.get(i);
-            }
-        }
-        return null;
-    }
-
-    public Code save(Code newCode) {
-        Code code = new Code();
-        code.setId(newCodeId++);
-        code.setContent(newCode.getContent());
-        LocalDateTime localDateTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMATTER);
-        String formatDateTime = localDateTime.format(formatter);
-        code.setLastUpdate(formatDateTime);
-        codeList.add(code);
-        return code;
-    }
-
-    public String delete(long id) {
-        codeList.removeIf(x -> x.getId() == id);
-        return null;
-    }
-
-    public Code update(Code code) {
-        int idx = 0;
-        long id = 0;
-        for(int i = 0; i < codeList.size(); i++) {
-            if(codeList.get(i).getId() == code.getId()) {
-                id = code.getId();
-                idx = i;
-                break;
-            }
-        }
-        Code newCode = new Code();
-        newCode.setId(id);
-        newCode.setContent(code.getContent());
-        newCode.setLastUpdate(code.getLastUpdate());
-        codeList.set(idx, newCode);
-        return code;
-    }
-
-    public List<Code> getLatestCodes() {
-        if(codeList.isEmpty())
-        {
-            return null;
-        }
-
-        List<Code> latestCodeList = new ArrayList<>();
-        int idx = 1;
-        for (int i = codeList.size() - 1; i >= 0; i--){
-            latestCodeList.add(codeList.get(i));
-            if(++idx > 10) {
-                return latestCodeList;
-            }
-        }
-
-        return latestCodeList;
-
-    }
-
-    public Map<String, String> getLastId() {
-        HashMap<String, String> lastIdJson = new HashMap<>();
-        lastIdJson.put("id", String.valueOf(codeList.get(codeList.size()-1).getId()));
-        return lastIdJson;
-    }
+@Repository
+public interface CodeRepository extends CrudRepository<Code, Long> {
+    Code findCodeById(long id);
+    List<Code> findAll();
+    List<Code> findTop10ByOrderByIdDesc();
 }

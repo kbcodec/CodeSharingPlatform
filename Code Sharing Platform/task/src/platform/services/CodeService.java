@@ -5,41 +5,30 @@ import org.springframework.stereotype.Service;
 import platform.models.Code;
 import platform.repositories.CodeRepository;
 
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class CodeService {
+    private final CodeRepository codeRepository;
     @Autowired
-    private CodeRepository codeRepository;
+    public CodeService(CodeRepository codeRepository) {
+        this.codeRepository = codeRepository;
+    }
 
-    public Code saveCode(Code code){
+    public Code saveCode(Code code) {
         return codeRepository.save(code);
     }
 
-    public List<Code> getCodes() {
-        return codeRepository.getAllCodes();
+    public Code findCodeById(long id) {
+        return codeRepository.findCodeById(id);
     }
 
-    public Code getCodeById(long id) {
-        return codeRepository.findById(id);
+    public List<Code> findAll() {
+        return codeRepository.findAll();
     }
 
-    public String deleteCode(long id) {
-        codeRepository.delete(id);
-        return "Code removed. id = " + id;
-    }
-
-    public Code updateCode (Code code) {
-        return codeRepository.update(code);
-    }
-
-    public List<Code> getLatestCodes() {
-        return codeRepository.getLatestCodes();
-    }
-
-    public Map<String, String> getLastId() {
-        return codeRepository.getLastId();
+    public List<Code> findLatestCodes() {
+        return codeRepository.findTop10ByOrderByIdDesc();
     }
 }
