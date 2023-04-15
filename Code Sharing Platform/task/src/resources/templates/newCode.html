@@ -7,8 +7,12 @@
     <script>
         function send() {
             console.log(document.getElementById("code_snippet").value);
+            console.log(document.getElementById("time_restriction").value);
+            console.log(document.getElementById("views_restriction").value);
             let object = {
-                "code": document.getElementById("code_snippet").value
+                "code": document.getElementById("code_snippet").value,
+                "time": document.getElementById("time_restriction").value,
+                "view": document.getElementById("views_restriction").value
             };
 
             let json = JSON.stringify(object);
@@ -23,10 +27,95 @@
             }
         }
     </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Source Code Pro', monospace;
+        }
+
+        .content {
+            background-color: #f3f1e8;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            background-color: #e2dabf;
+            width: 100vw;
+            height: 7rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: rgb(85, 85, 85);
+        }
+
+        #code_snippet {
+            border: 2px solid #e2dabf;
+            height: 15rem;
+            width: 40rem;
+            resize: none;
+            border-radius: 2rem;
+            padding: 2rem;
+            margin: 2rem
+        }
+
+        .code-restriction-block {
+            display: flex;
+            width: 40rem;
+            justify-content: space-between;
+        }
+
+        .code-time-restriction-block,
+        .code-views-restriction-block {
+            background-color: #f4f2ec;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        #time_restriction, #views_restriction {
+            border: 2px solid #e2dabf;
+            border-radius: 2rem;
+            padding: 0.5rem 1rem;
+        }
+
+        #send_snippet {
+            border: 3px solid #e2dabf;
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            cursor: pointer;
+            width: 40rem;
+            padding: 0.5rem 1rem;
+            margin: 2rem;
+            font-size: 1.2rem;
+            transition: 0.2s;
+        }
+
+        #send_snippet:hover {
+            background-color: rgb(130, 247, 179);
+
+        }
+    </style>
 </head>
 <body>
-<textarea id="code_snippet" th:value="${code}"></textarea>
-<button id="send_snippet" type="submit" onclick="send()">Submit</button>
-
+<div class="content">
+    <h1>Add new code</h1>
+    <div class="code-snippet-block">
+        <label for="code_snippet"></label><textarea id="code_snippet" th:value="${code}" placeholder="Paste your code here..."></textarea>
+    </div>
+    <div class="code-restriction-block">
+        <div class="code-time-restriction-block">
+            <span class="restriction-text">Set time restriction (seconds)</span><label for="time_restriction"></label><input class="restriction" id="time_restriction" type="text" placeholder="Type 0 for no restriction"/>
+        </div>
+        <div class="code-views-restriction-block">
+            <span class="restriction-text">Set views restriction (times)</span><label for="views_restriction"></label><input class="restriction" id="views_restriction" type="text" placeholder="Type 0 for no restriction"/>
+        </div>
+    </div>
+    <button id="send_snippet" type="submit" onclick="send()">Submit</button>
+</div>
 </body>
 </html>

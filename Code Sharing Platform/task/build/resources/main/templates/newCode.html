@@ -7,8 +7,12 @@
     <script>
         function send() {
             console.log(document.getElementById("code_snippet").value);
+            console.log(document.getElementById("time_restriction").value);
+            console.log(document.getElementById("views_restriction").value);
             let object = {
-                "code": document.getElementById("code_snippet").value
+                "code": document.getElementById("code_snippet").value,
+                "time": document.getElementById("time_restriction").value,
+                "view": document.getElementById("views_restriction").value
             };
 
             let json = JSON.stringify(object);
@@ -25,8 +29,9 @@
     </script>
 </head>
 <body>
-<textarea id="code_snippet" th:value="${code}"></textarea>
-<button id="send_snippet" type="submit" onclick="send()">Submit</button>
-
+    <label for="code_snippet"></label><textarea id="code_snippet" th:value="${code}"></textarea>
+    <label for="time_restriction"></label><input id="time_restriction" type="text"/>
+    <label for="views_restriction"></label><input id="views_restriction" type="text"/>
+    <button id="send_snippet" type="submit" onclick="send()">Submit</button>
 </body>
 </html>

@@ -1,0 +1,71 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Source Code Pro', monospace;
+}
+
+.content {
+    background-color: #f3f1e8;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    background-color: #e2dabf;
+    width: 100vw;
+    height: 7rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgb(85, 85, 85);
+}
+
+#code_snippet {
+    border: 2px solid #e2dabf;
+    height: 15rem;
+    width: 40rem;
+    resize: none;
+    border-radius: 2rem;
+    padding: 2rem;
+    margin: 2rem
+}
+
+.code-restriction-block {
+    display: flex;
+    width: 40rem;
+    justify-content: space-between;
+}
+
+.code-time-restriction-block,
+.code-views-restriction-block {
+    background-color: #f4f2ec;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+#time_restriction, #views_restriction {
+    border: 2px solid #e2dabf;
+    border-radius: 2rem;
+    padding: 0.5rem 1rem;
+}
+
+#send_snippet {
+    border: 3px solid #e2dabf;
+    background-color: #ffffff;
+    border-radius: 1.5rem;
+    cursor: pointer;
+    width: 40rem;
+    padding: 0.5rem 1rem;
+    margin: 2rem;
+    font-size: 1.2rem;
+    transition: 0.2s;
+}
+
+#send_snippet:hover {
+    background-color: rgb(130, 247, 179);
+
+}
