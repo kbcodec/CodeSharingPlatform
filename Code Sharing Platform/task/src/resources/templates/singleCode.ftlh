@@ -87,7 +87,7 @@
         <span>Created at: </span><span id="load_date">${date}</span>
     </div>
     <div class="code-restriction-block">
-        <#if isTimeRestricion == true>
+        <#if isTimeRestriction == true>
             <div class="code-time-restriction-block">
                 <span class="restriction-text">Time left (seconds):</span>
                 <span id="time_restriction">${time}</span>

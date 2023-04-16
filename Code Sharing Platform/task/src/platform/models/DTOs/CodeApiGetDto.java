@@ -22,7 +22,7 @@ public class CodeApiGetDto {
     private String lastUpdate;
     @JsonProperty("time")
     private long timeRestriction;
-    @JsonProperty("views")
+    @JsonProperty("view")
     private int viewsRestriction;
     @JsonIgnore
     public final static String DATE_FORMAT = "yyyy/MM/dd HH:mm:ss";

@@ -33,7 +33,7 @@ public class WebCodeController {
         model.addAttribute("date", code.getLastUpdate());
         model.addAttribute("time", code.getTimeRestriction());
         model.addAttribute("view", code.getViewsRestriction());
-        model.addAttribute("isTimeRestricion", codeRestrictions.isTimeRestriction());
+        model.addAttribute("isTimeRestriction", codeRestrictions.isTimeRestriction());
         model.addAttribute("isViewsRestriction", codeRestrictions.isViewsRestriction());
         return "singleCode";
     }

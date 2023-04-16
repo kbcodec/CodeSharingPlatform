@@ -9,6 +9,6 @@ public class CodeApiDto {
     private String content;
     @JsonProperty("time")
     private long timeRestriction;
-    @JsonProperty("views")
+    @JsonProperty("view")
     private int viewsRestriction;
 }
