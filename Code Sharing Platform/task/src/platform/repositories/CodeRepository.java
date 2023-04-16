@@ -12,9 +12,7 @@ import java.util.UUID;
 @Repository
 public interface CodeRepository extends CrudRepository<Code, Long> {
     Code findCodeById(UUID id);
-    List<Code> findAll();
     @Query(value = "SELECT * FROM code.code WHERE is_time_restriction = false and is_views_restriction = false ORDER BY last_update DESC LIMIT 10", nativeQuery = true)
     List<Code> findLastTenCodes();
-
     Code findById(UUID id);
 }

@@ -28,7 +28,6 @@ public class CodeService {
         codeRepository.save(code);
         return codeEntityToIdDtoMapper(code);
     }
-
     public CodeApiGetDto findCodeById(UUID id) {
         Code code = codeRepository.findCodeById(id);
         if (code.isViewsRestriction()) {
@@ -51,15 +50,9 @@ public class CodeService {
         return codeEntityToApiGetDtoMapper(code);
 
     }
-
-    public List<Code> findAll() {
-        return codeRepository.findAll();
-    }
-
     public List<CodeApiGetDto> findLatestTenCodes() {
         return codeEntitiesToApiGetDtosMapper(codeRepository.findLastTenCodes());
     }
-
     public Code findById(UUID id) {
         return codeRepository.findById(id);
     }
